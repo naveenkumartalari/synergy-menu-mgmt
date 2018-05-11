@@ -1,7 +1,7 @@
 /**
  * 
  */
-package com.orbc.synergy.menumgmt;
+package com.orbc.syn.menumgmt;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

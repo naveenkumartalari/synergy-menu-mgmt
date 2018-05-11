@@ -1,4 +1,4 @@
-package com.orbc.synergy.menumgmt.entities;
+package com.orbc.syn.menumgmt.entity;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;

@@ -29,7 +29,7 @@
 			false
 		</property>
 		<!-- List of XML mapping files -->
-		<mapping class="com.orbc.rest.domain.Resource" />
-		<mapping class="com.orbc.rest.domain.Menu" />
+		<!-- <mapping class="com.orbc.rest.domain.Resource" /> -->
+		<mapping class="com.orbc.syn.menumgmt.entity.Menu" />
 	</session-factory>
 </hibernate-configuration>

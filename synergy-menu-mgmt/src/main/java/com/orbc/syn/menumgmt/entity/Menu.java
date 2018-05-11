@@ -1,7 +1,8 @@
-package com.orbc.synergy.menumgmt.entities;
+package com.orbc.syn.menumgmt.entity;
 
 import java.util.HashSet;
 import java.util.Set;
+import java.util.TreeSet;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -11,6 +12,8 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
+import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
@@ -26,26 +29,26 @@ public class Menu {
 	
 		@Id
 		@GeneratedValue(strategy = GenerationType.IDENTITY)
-		 @Column(name = "menu_item_id", unique = true, nullable = false)
+		@Column(name = "menu_item_id", unique = true, nullable = false)
 		public int id;
 		@Column(name="item_name")
 		private String name;
 		@Column(name="tooltip")
 		private String toolTip;
 		
-		@OneToOne
-		@JoinColumn(name="resource_id")
-		
-		private Resource resource;
-		public Resource getResource() {
-			return resource;
+		/*@OneToOne
+		@JoinColumn(name="resource_id")*/
+		@Column(name="resource_id")
+		private int resourceId;
+		public int getResourceId() {
+			return resourceId;
 		}
 
-		public void setResource(Resource resource) {
-			this.resource = resource;
+		public void setResourceId(int resourceId) {
+			this.resourceId = resourceId;
 		}
 
-		@Column(name="menuorder")
+		/*@Column(name="menuorder")
 		private int menuOrder;
 		@Transient
 		private boolean enable;
@@ -64,7 +67,7 @@ public class Menu {
 
 		public void setMenuOrder(int order) {
 			this.menuOrder = order;
-		}
+		}*/
 
 		@ManyToOne
 		@JoinColumn(name="parent_menu_item_id")
@@ -77,6 +80,10 @@ public class Menu {
 
 		public int getId() {
 			return id;
+		}
+
+		public void setId(int id) {
+			this.id = id;
 		}
 
 		public String getName() {
@@ -111,6 +118,25 @@ public class Menu {
 			this.children = children;
 		}
 
+		/*private long parentMenuItemId;
+
+
+		public long getParentMenuItemId() {
+			return parentMenuItemId;
+		}
+
+		public void setParentMenuItemId(long parentMenuItemId) {
+			this.parentMenuItemId = parentMenuItemId;
+		}*/
+//		@Override
+//		public int compareTo(Object o) {
+//			Menu menutoCOmpare = (Menu)o;
+//			int diff = this.order - menutoCOmpare.order;
+//			if(diff == 0){
+//				return this.id-menutoCOmpare.id;
+//			}
+//			return diff;
+//		}
 		@Override
 		public int hashCode(){
 			return this.getId();

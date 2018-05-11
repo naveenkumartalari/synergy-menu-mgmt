@@ -1,4 +1,4 @@
-package com.orbc.synergy.menumgmt;
+package com.orbc.syn.menumgmt;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;

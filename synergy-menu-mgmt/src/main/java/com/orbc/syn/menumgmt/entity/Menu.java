@@ -25,9 +25,9 @@ public class Menu implements Serializable{
 	
 		@Id
 		@GeneratedValue(strategy = GenerationType.IDENTITY)
-		@Column(name = "menu_item_id", unique = true, nullable = false)
+		@Column(name = "id", unique = true, nullable = false)
 		public int id;
-		@Column(name="item_name")
+		@Column(name="name")
 		private String name;
 		@Column(name="tooltip")
 		private String toolTip;
@@ -117,16 +117,16 @@ public class Menu implements Serializable{
 			this.children = children;
 		}*/
 		
-		@Column(name="parent_menu_item_id")
-		private int parentMenuItemId;
+		@Column(name="parent_menu_id")
+		private int parentMenuId;
 
 
-		public int getParentMenuItemId() {
-			return parentMenuItemId;
+		public int getParentMenuId() {
+			return parentMenuId;
 		}
 
-		public void setParentMenuItemId(int parentMenuItemId) {
-			this.parentMenuItemId = parentMenuItemId;
+		public void setParentMenuId(int parentMenuId) {
+			this.parentMenuId = parentMenuId;
 		}
 //		@Override
 //		public int compareTo(Object o) {

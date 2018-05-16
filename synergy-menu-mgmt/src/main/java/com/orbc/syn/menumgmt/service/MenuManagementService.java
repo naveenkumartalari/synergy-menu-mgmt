@@ -55,7 +55,7 @@ public class MenuManagementService {
 		menu.setResourceId(menuDto.getResourceId());
 
 		menu.setMenuOrder(menuDto.getOrder());
-		menu.setParentMenuItemId(menuDto.getParent());
+		menu.setParentMenuId(menuDto.getParent());
 
 		return menu;
 	}
@@ -68,7 +68,7 @@ public class MenuManagementService {
 		menuDto.setToolTip(menu.getToolTip());
 		menuDto.setResourceId(menu.getResourceId());
 
-		menuDto.setParent(menu.getParentMenuItemId());
+		menuDto.setParent(menu.getParentMenuId());
 		menuDto.setOrder(menu.getMenuOrder());
 
 		return menuDto;

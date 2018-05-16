@@ -4,6 +4,7 @@
 package com.orbc.syn.menumgmt.service;
 
 import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.Set;
 
 import org.apache.logging.log4j.LogManager;
@@ -52,8 +53,11 @@ public class MenuManagementService {
 		menu.setName(menuDto.getName());
 		menu.setToolTip(menuDto.getToolTip());
 		menu.setResourceId(menuDto.getResourceId());
-		return menu;
 
+		menu.setMenuOrder(menuDto.getOrder());
+		menu.setParentMenuItemId(menuDto.getParent());
+
+		return menu;
 	}
 
 	private MenuDto populateMenuDto(Menu menu) {
@@ -63,39 +67,49 @@ public class MenuManagementService {
 		menuDto.setName(menu.getName());
 		menuDto.setToolTip(menu.getToolTip());
 		menuDto.setResourceId(menu.getResourceId());
-		return menuDto;
 
+		menuDto.setParent(menu.getParentMenuItemId());
+		menuDto.setOrder(menu.getMenuOrder());
+
+		return menuDto;
 	}
 
 	public Set<MenuDto> getAllMenus() {
 		log.info("getAllMenus() : starts");
 
-		Set<MenuDto> data = new HashSet<MenuDto>();
-		Set<Menu> dataDto = null;
-		dataDto = getMenuMgmtDAO().getAllMenus();
+		Set<MenuDto> menusDto = new HashSet<MenuDto>();
+		Set<Menu> menus = null;
+		menus = getMenuMgmtDAO().getAllMenus();
 
-		for (Menu dto : dataDto) {
-			data.add(populateMenuDto(dto));
+		for (Menu menu : menus) {
+			menusDto.add(populateMenuDto(menu));
 		}
 
 		log.info("getAllMenus() : ends");
-		return data;
-
+		return menusDto;
 	}
 
 	public Set<MenuDto> getMenusList() {
+		log.info("getMenusList() : starts");
+
 		Set<MenuDto> data = null;
 
-		return data;
+		Set<Menu> menuSet = getMenuMgmtDAO().getMenusList();
+		data = populateMenuDtoSet(menuSet);
 
+		log.info("getMenusList() : ends");
+		return data;
 	}
 
-	public Set<MenuDto> editMenuList(Set<MenuDto> menuDto) {
+	public Set<MenuDto> editMenusList(Set<MenuDto> menuDtos) {
+		log.info("editMenusList(Set<MenuDto> menuDtos) : starts");
 
-		Set<MenuDto> data = null;
+		Set<Menu> menuSet = populateMenuSet(menuDtos);
+		menuSet = getMenuMgmtDAO().editMenuList(menuSet);
 
-		return data;
+		log.info("editMenusList(Set<MenuDto> menuDtos) : ends");
 
+		return menuDtos;
 	}
 
 	public MenuDto editMenu(MenuDto menuDto) {
@@ -118,6 +132,36 @@ public class MenuManagementService {
 
 		log.info("deleteMenu(String id) : ends");
 		return flag;
+	}
+
+	public boolean deleteParent(Set<MenuDto> menuDtos) {
+
+		log.info("deleteParent(Set<MenuDto> menuDtos) : starts");
+		Set<Menu> menuSet = populateMenuSet(menuDtos);
+		boolean flag = getMenuMgmtDAO().deleteParent(menuSet);
+
+		log.info("deleteParent(Set<MenuDto> menuDtos) : ends");
+		return flag;
+	}
+
+	private Set<Menu> populateMenuSet(Set<MenuDto> menuDtos) {
+
+		Set<Menu> menuSet = new LinkedHashSet<>();
+		for (MenuDto menuDto : menuDtos) {
+
+			menuSet.add(populateMenu(menuDto));
+		}
+		return menuSet;
+	}
+
+	private Set<MenuDto> populateMenuDtoSet(Set<Menu> menus) {
+
+		Set<MenuDto> menuDtoSet = new LinkedHashSet<>();
+		for (Menu menu : menus) {
+			menuDtoSet.add(populateMenuDto(menu));
+		}
+
+		return menuDtoSet;
 	}
 
 }

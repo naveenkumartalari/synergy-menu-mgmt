@@ -6,6 +6,9 @@ public class MenuDto {
 	private String name;
 	private String toolTip;
 	private int resourceId;
+	
+	private int parent;
+	private int order;
 
 	public int getId() {
 		return id;
@@ -37,6 +40,22 @@ public class MenuDto {
 
 	public void setResourceId(int resourceId) {
 		this.resourceId = resourceId;
+	}
+
+	public int getParent() {
+		return parent;
+	}
+
+	public void setParent(int parent) {
+		this.parent = parent;
+	}
+
+	public int getOrder() {
+		return order;
+	}
+
+	public void setOrder(int order) {
+		this.order = order;
 	}
 
 }

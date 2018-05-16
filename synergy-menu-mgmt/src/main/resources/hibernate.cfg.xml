@@ -15,7 +15,7 @@
 		<!-- Assume test is the database name -->
 
 		<property name="hibernate.connection.url">
-			jdbc:mysql://localhost:3306/synergy
+			jdbc:mysql://localhost:3306/synergy <!-- 172.19.0.181 monika ip -->
 		</property>
 
 		<property name="hibernate.connection.username">

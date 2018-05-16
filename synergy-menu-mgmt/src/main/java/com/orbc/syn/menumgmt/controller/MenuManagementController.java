@@ -3,9 +3,8 @@
  */
 package com.orbc.syn.menumgmt.controller;
 
+import java.util.LinkedHashSet;
 import java.util.Set;
-
-import javax.websocket.server.PathParam;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -19,6 +18,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.orbc.syn.menumgmt.constants.ControllerConstants;
 import com.orbc.syn.menumgmt.dto.MenuDto;
 import com.orbc.syn.menumgmt.dto.Response;
 import com.orbc.syn.menumgmt.service.MenuManagementService;
@@ -39,7 +39,7 @@ public class MenuManagementController {
 		return menuMgmtService;
 	}
 
-	@RequestMapping(value = "/addmenu", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
+	@RequestMapping(value = "/addMenu", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
 	public MenuDto addMenu(@RequestBody MenuDto menuDto) {
 
 		log.info("addMenu(Menu menu) : starts");
@@ -48,10 +48,9 @@ public class MenuManagementController {
 
 		log.info("addMenu(Menu menu) : ends");
 		return menuDto;
-
 	}
 
-	@RequestMapping(value = "/editmenu", method = RequestMethod.PUT, produces = MediaType.APPLICATION_JSON_VALUE)
+	@RequestMapping(value = "/editMenu", method = RequestMethod.PUT, produces = MediaType.APPLICATION_JSON_VALUE)
 	public MenuDto editMenu(@RequestBody MenuDto menuDto) {
 
 		log.info("editMenu(Menu menu) : starts");
@@ -60,10 +59,9 @@ public class MenuManagementController {
 
 		log.info("editMenu(Menu menu) : ends");
 		return menuDto;
-
 	}
 
-	@RequestMapping(value = "/deletemenu/{menuId}", method = RequestMethod.DELETE, produces = MediaType.APPLICATION_JSON_VALUE)
+	@RequestMapping(value = "/deleteMenu/{menuId}", method = RequestMethod.DELETE, produces = MediaType.APPLICATION_JSON_VALUE)
 	public Response deleteMenu(@PathVariable("menuId") String menuId) {
 
 		log.info("deleteMenu(Menu menu) : starts");
@@ -73,11 +71,11 @@ public class MenuManagementController {
 		Response response = new Response();
 
 		if (flag) {
-			response.setResult("success");
-			response.setDesc("Menu Id "+menuId+" has been deleted");
+			response.setResult(ControllerConstants.SUCCESS);
+			response.setDesc("Menu Id " + menuId + " has been deleted");
 		} else {
-			response.setResult("failure");
-			response.setDesc("Menu Id "+menuId + " not deleted");
+			response.setResult(ControllerConstants.FAILURE);
+			response.setDesc("Menu Id " + menuId + " not deleted");
 		}
 
 		log.info("deleteMenu(Menu menu) : ends");
@@ -85,29 +83,68 @@ public class MenuManagementController {
 
 	}
 
-	@RequestMapping(value = "/addresourcetomenu/{menuId}/{resourceId}", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
-	public String addResourceToMenu(@PathParam("menuId") String menuId, @PathParam("resourceId") String resourceId) {
+	@RequestMapping(value = "/addResourceToMenu/{menuId}/{resourceId}", method = RequestMethod.PUT, produces = MediaType.APPLICATION_JSON_VALUE)
+	public String addResourceToMenu(@PathVariable("menuId") String menuId,
+			@PathVariable("resourceId") String resourceId) {
 
 		return "resource ID: " + resourceId + "has been added to Menu ID: " + menuId;
-
 	}
 
-	@GetMapping(value = "/getallmenus", produces = MediaType.APPLICATION_JSON_VALUE)
+	@GetMapping(value = "/getAllMenus", produces = MediaType.APPLICATION_JSON_VALUE)
 	@ResponseBody
 	public Set<MenuDto> getAllMenus() {
 
 		log.info("getAllMenus() : starts");
 
-		/*
-		 * Menu menu1=new Menu(); menu1.setName("Menu1"); menu1.setToolTip("menu1");
-		 * menu1.setResourceId(1); menu1.id=1;
-		 */
-
 		Set<MenuDto> menuDtos = getMenuMgmtService().getAllMenus();
 
 		log.info("getAllMenus() : ends");
 		return menuDtos;
+	}
 
+	@GetMapping(value = "/getMenus", produces = MediaType.APPLICATION_JSON_VALUE)
+	@ResponseBody
+	public Set<MenuDto> getMenusList() {
+
+		log.info("getMenusList() : starts");
+
+		Set<MenuDto> menuDtos = getMenuMgmtService().getMenusList();
+
+		log.info("getMenusList() : ends");
+		return menuDtos;
+
+	}
+
+	@RequestMapping(value = "/editMenus", method = RequestMethod.PUT, produces = MediaType.APPLICATION_JSON_VALUE)
+	public Set<MenuDto> editMenusList(@RequestBody LinkedHashSet<MenuDto> menuDtoSet) {
+
+		log.info("editMenusList(LinkedHashSet<MenuDto> menuDtoSet) : starts");
+
+		Set<MenuDto> menuSet = getMenuMgmtService().editMenusList(menuDtoSet);
+
+		log.info("editMenusList(LinkedHashSet<MenuDto> menuDtoSet) : ends");
+		return menuSet;
+	}
+	
+	@RequestMapping(value = "/deleteParent", method = RequestMethod.DELETE, produces = MediaType.APPLICATION_JSON_VALUE)
+	public Response deleteParent(@RequestBody LinkedHashSet<MenuDto> menuDtoSet) {
+
+		log.info("deleteParent(LinkedHashSet<MenuDto> menuDtoSet) : starts");
+
+		boolean flag = getMenuMgmtService().deleteParent(menuDtoSet);
+
+		Response response = new Response();
+
+		if (flag) {
+			response.setResult(ControllerConstants.SUCCESS);
+			response.setDesc("Parent has been deleted");
+		} else {
+			response.setResult(ControllerConstants.FAILURE);
+			response.setDesc("Parent has not deleted");
+		}
+
+		log.info("deleteParent(LinkedHashSet<MenuDto> menuDtoSet) : ends");
+		return response;
 	}
 
 }

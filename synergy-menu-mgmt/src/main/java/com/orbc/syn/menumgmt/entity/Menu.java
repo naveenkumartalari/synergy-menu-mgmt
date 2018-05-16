@@ -1,8 +1,8 @@
 package com.orbc.syn.menumgmt.entity;
 
-import java.util.HashSet;
+import java.io.Serializable;
+import java.util.LinkedHashSet;
 import java.util.Set;
-import java.util.TreeSet;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -12,19 +12,15 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
-import javax.persistence.JoinTable;
-import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
-import javax.persistence.OneToOne;
 import javax.persistence.Table;
-import javax.persistence.Transient;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 @Entity
 @Table(name ="menu_item")
-public class Menu {
+public class Menu implements Serializable{
 	
 	
 		@Id
@@ -48,8 +44,9 @@ public class Menu {
 			this.resourceId = resourceId;
 		}
 
-		/*@Column(name="menuorder")
+		@Column(name="menu_order")
 		private int menuOrder;
+		/*
 		@Transient
 		private boolean enable;
 		
@@ -59,7 +56,7 @@ public class Menu {
 
 		public void setEnable(boolean enable) {
 			this.enable = enable;
-		}
+		}*/
 
 		public int getMenuOrder() {
 			return menuOrder;
@@ -67,16 +64,18 @@ public class Menu {
 
 		public void setMenuOrder(int order) {
 			this.menuOrder = order;
-		}*/
+		}
 
-		@ManyToOne
+		/*@ManyToOne
 		@JoinColumn(name="parent_menu_item_id")
 		@JsonBackReference
 		private Menu parent;
 
 		@OneToMany(fetch = FetchType.EAGER, mappedBy="parent", cascade={CascadeType.ALL})
-		@JsonManagedReference
-		private Set<Menu> children = new HashSet<Menu>();
+		@JsonManagedReference*/
+		//@Column(name="parent_menu_item_id")
+		//private Menu parent;
+		//private Set<Menu> children = new LinkedHashSet<Menu>();
 
 		public int getId() {
 			return id;
@@ -102,7 +101,7 @@ public class Menu {
 			this.toolTip = toolTip;
 		}
 
-		public Menu getParent() {
+		/*public Menu getParent() {
 			return parent;
 		}
 
@@ -116,18 +115,19 @@ public class Menu {
 
 		public void setchildren(Set<Menu> children) {
 			this.children = children;
-		}
+		}*/
+		
+		@Column(name="parent_menu_item_id")
+		private int parentMenuItemId;
 
-		/*private long parentMenuItemId;
 
-
-		public long getParentMenuItemId() {
+		public int getParentMenuItemId() {
 			return parentMenuItemId;
 		}
 
-		public void setParentMenuItemId(long parentMenuItemId) {
+		public void setParentMenuItemId(int parentMenuItemId) {
 			this.parentMenuItemId = parentMenuItemId;
-		}*/
+		}
 //		@Override
 //		public int compareTo(Object o) {
 //			Menu menutoCOmpare = (Menu)o;
@@ -137,6 +137,19 @@ public class Menu {
 //			}
 //			return diff;
 //		}
+		
+		@Column(name=" is_deleted")
+		private int  isDeleted;
+		
+		
+		public int getIsDeleted() {
+			return isDeleted;
+		}
+
+		public void setIsDeleted(int isDeleted) {
+			this.isDeleted = isDeleted;
+		}
+
 		@Override
 		public int hashCode(){
 			return this.getId();

@@ -1,31 +1,27 @@
 package com.orbc.syn.menumgmt.dao;
 
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
 import static org.mockito.Matchers.anyObject;
 import static org.mockito.Mockito.when;
+import static org.testng.Assert.assertFalse;
+import static org.testng.Assert.assertNotNull;
 
-import org.junit.Before;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.testng.AbstractTestNGSpringContextTests;
+import org.testng.annotations.BeforeTest;
 import org.testng.annotations.Test;
 
 import com.orbc.syn.menumgmt.SynergyMenuMgmtApplication;
 import com.orbc.syn.menumgmt.entity.Menu;
 
 @SpringBootTest(classes = SynergyMenuMgmtApplication.class)
-public class MenuManagementDAOTest extends AbstractTestNGSpringContextTests{
+public class MenuMgmtDAOTest extends AbstractTestNGSpringContextTests{
 	
 	@Mock
-	private MenuManagementDAO menuMgmtDAO;	
+	private MenuMgmtDAO menuMgmtDAO;	
 	
-	@Autowired
-	private MenuManagementDAO menuMgmtDao;
-	
-	@Before
+	@BeforeTest
 	public void setUp(){
 		MockitoAnnotations.initMocks(this);
 		
@@ -49,9 +45,9 @@ public class MenuManagementDAOTest extends AbstractTestNGSpringContextTests{
 		menu.setToolTip("sample menu");
 		menu.setResourceId(1);
 		
-		menu=menuMgmtDao.addMenu(menu);
-		assertNotNull("unexpected null",menu);
-		assertFalse("menu has not created", menu.getId()==0);
+		menu=menuMgmtDAO.addMenu(menu);
+		assertNotNull(menu,"unexpected null");
+		assertFalse( menu.getId()==0,"menu has not created");
 		
 	}
 	

@@ -21,21 +21,23 @@ import org.springframework.web.bind.annotation.RestController;
 import com.orbc.syn.menumgmt.constants.ControllerConstants;
 import com.orbc.syn.menumgmt.dto.MenuDto;
 import com.orbc.syn.menumgmt.dto.Response;
-import com.orbc.syn.menumgmt.service.MenuManagementService;
+import com.orbc.syn.menumgmt.exception.MenuMgmtDAOException;
+import com.orbc.syn.menumgmt.exception.MenuMgmtServiceException;
+import com.orbc.syn.menumgmt.service.MenuMgmtService;
 
 /**
  * @author ntalari
  *
  */
 @RestController
-public class MenuManagementController {
+public class MenuMgmtController {
 
-	private static final Logger log = LogManager.getLogger(MenuManagementController.class);
+	private static final Logger log = LogManager.getLogger(MenuMgmtController.class);
 
 	@Autowired
-	private MenuManagementService menuMgmtService;
+	private MenuMgmtService menuMgmtService;
 
-	public MenuManagementService getMenuMgmtService() {
+	public MenuMgmtService getMenuMgmtService() {
 		return menuMgmtService;
 	}
 
@@ -44,7 +46,13 @@ public class MenuManagementController {
 
 		log.info("addMenu(Menu menu) : starts");
 
-		menuDto = getMenuMgmtService().addMenu(menuDto);
+		try {
+			menuDto = getMenuMgmtService().addMenu(menuDto);
+		} catch (MenuMgmtDAOException e) {
+			throw e;
+		} catch (MenuMgmtServiceException e) {
+			throw e;
+		}
 
 		log.info("addMenu(Menu menu) : ends");
 		return menuDto;
@@ -125,7 +133,7 @@ public class MenuManagementController {
 		log.info("editMenusList(LinkedHashSet<MenuDto> menuDtoSet) : ends");
 		return menuSet;
 	}
-	
+
 	@RequestMapping(value = "/deleteParent", method = RequestMethod.DELETE, produces = MediaType.APPLICATION_JSON_VALUE)
 	public Response deleteParent(@RequestBody LinkedHashSet<MenuDto> menuDtoSet) {
 

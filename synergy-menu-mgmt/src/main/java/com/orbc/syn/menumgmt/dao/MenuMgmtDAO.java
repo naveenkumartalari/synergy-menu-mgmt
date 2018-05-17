@@ -17,7 +17,9 @@ import org.hibernate.criterion.Restrictions;
 import org.springframework.stereotype.Component;
 
 import com.orbc.syn.menumgmt.constants.DBConstants;
+import com.orbc.syn.menumgmt.constants.ErrorCodes;
 import com.orbc.syn.menumgmt.entity.Menu;
+import com.orbc.syn.menumgmt.exception.MenuMgmtDAOException;
 import com.orbc.syn.menumgmt.utils.HibernateUtil;
 
 /**
@@ -25,9 +27,9 @@ import com.orbc.syn.menumgmt.utils.HibernateUtil;
  *
  */
 @Component
-public class MenuManagementDAO {
+public class MenuMgmtDAO {
 
-	private static final Logger log = LogManager.getLogger(MenuManagementDAO.class);
+	private static final Logger log = LogManager.getLogger(MenuMgmtDAO.class);
 
 	public Menu addMenu(Menu menu) {
 
@@ -44,7 +46,7 @@ public class MenuManagementDAO {
 		} catch (HibernateException e) {
 			transaction.rollback();
 			e.printStackTrace();
-			return menu;
+			throw new MenuMgmtDAOException("unable to create menu", e, ErrorCodes.ADD_MENU_DB_ERROR);
 		} finally {
 			session.close();
 		}
@@ -70,6 +72,7 @@ public class MenuManagementDAO {
 		} catch (HibernateException e) {
 			transaction.rollback();
 			e.printStackTrace();
+			throw new MenuMgmtDAOException("unable to retrieve menus", e, ErrorCodes.GET_ALL_MENUS_DB_ERROR);
 		} finally {
 			session.close();
 		}
@@ -97,6 +100,7 @@ public class MenuManagementDAO {
 		} catch (HibernateException e) {
 			transaction.rollback();
 			e.printStackTrace();
+			throw new MenuMgmtDAOException("unable to retrieve menu list", e, ErrorCodes.GET_MENU_LIST_DB_ERROR);
 		} finally {
 			session.close();
 		}
@@ -115,8 +119,8 @@ public class MenuManagementDAO {
 		Transaction transaction = null;
 		try {
 			transaction = session.beginTransaction();
-			
-			log.info("editMenuList's size : "+menus.size());
+
+			log.info("editMenuList's size : " + menus.size());
 			for (Menu menu : menus) {
 				session.update(menu);
 			}
@@ -125,6 +129,7 @@ public class MenuManagementDAO {
 		} catch (HibernateException e) {
 			transaction.rollback();
 			e.printStackTrace();
+			throw new MenuMgmtDAOException("unable to edit menuList", e, ErrorCodes.EDIT_MENU_LIST_DB_ERROR);
 		} finally {
 			session.close();
 		}
@@ -148,7 +153,7 @@ public class MenuManagementDAO {
 		} catch (HibernateException e) {
 			transaction.rollback();
 			e.printStackTrace();
-			return menu;
+			throw new MenuMgmtDAOException("unable to edit menu", e, ErrorCodes.EDIT_MENU_DB_ERROR);
 		} finally {
 			session.close();
 		}
@@ -170,14 +175,13 @@ public class MenuManagementDAO {
 			Menu menu = (Menu) session.load(Menu.class, new Integer(Id));
 			menu.setIsDeleted(DBConstants.MENU_DELETED);// soft delete.
 
-			/*if (menu.getParent() != null) {
-				menu.getParent().getchildren().remove(menu);
-				session.save(menu.getParent());
-			} 
-				 * else { Criteria appcrt = session.createCriteria(Menu.class);
-				 * appcrt.add(Restrictions.eq("parent_menu_item_id",menu.getId())); data = new
-				 * HashSet<Menu>(appcrt.list()); }
-				 */
+			/*
+			 * if (menu.getParent() != null) { menu.getParent().getchildren().remove(menu);
+			 * session.save(menu.getParent()); } else { Criteria appcrt =
+			 * session.createCriteria(Menu.class);
+			 * appcrt.add(Restrictions.eq("parent_menu_item_id",menu.getId())); data = new
+			 * HashSet<Menu>(appcrt.list()); }
+			 */
 
 			session.update(menu);
 
@@ -185,7 +189,7 @@ public class MenuManagementDAO {
 		} catch (HibernateException e) {
 			transaction.rollback();
 			e.printStackTrace();
-			return false;
+			throw new MenuMgmtDAOException("unable to delete menu", e, ErrorCodes.DELETE_MENU_DB_ERROR);
 		} finally {
 			session.close();
 		}
@@ -193,7 +197,7 @@ public class MenuManagementDAO {
 		log.info("deleteMenu(String Id) : ends");
 		return true;
 	}
-	
+
 	public boolean deleteParent(Set<Menu> menus) {
 
 		log.info("deleteParent(Set<Menu> menus) : starts");
@@ -202,8 +206,8 @@ public class MenuManagementDAO {
 		Transaction transaction = null;
 		try {
 			transaction = session.beginTransaction();
-			
-			log.info("list size : "+menus.size());
+
+			log.info("list size : " + menus.size());
 			for (Menu menu : menus) {
 				menu.setIsDeleted(DBConstants.MENU_DELETED);// soft delete.
 				session.update(menu);
@@ -213,7 +217,7 @@ public class MenuManagementDAO {
 		} catch (HibernateException e) {
 			transaction.rollback();
 			e.printStackTrace();
-			return false;
+			throw new MenuMgmtDAOException("unable to delete parent menu", e, ErrorCodes.DELETE_PARENT_MENU_DB_ERROR);
 		} finally {
 			session.close();
 		}

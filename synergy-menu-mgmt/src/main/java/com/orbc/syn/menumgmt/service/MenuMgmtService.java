@@ -3,7 +3,6 @@
  */
 package com.orbc.syn.menumgmt.service;
 
-import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.Set;
 
@@ -12,23 +11,25 @@ import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.orbc.syn.menumgmt.dao.MenuManagementDAO;
+import com.orbc.syn.menumgmt.constants.ErrorCodes;
+import com.orbc.syn.menumgmt.dao.MenuMgmtDAO;
 import com.orbc.syn.menumgmt.dto.MenuDto;
 import com.orbc.syn.menumgmt.entity.Menu;
+import com.orbc.syn.menumgmt.exception.MenuMgmtServiceException;
 
 /**
  * @author ntalari
  *
  */
 @Service
-public class MenuManagementService {
+public class MenuMgmtService {
 
-	private static final Logger log = LogManager.getLogger(MenuManagementService.class);
+	private static final Logger log = LogManager.getLogger(MenuMgmtService.class);
 
 	@Autowired
-	private MenuManagementDAO menuMgmtDAO;
+	private MenuMgmtDAO menuMgmtDAO;
 
-	public MenuManagementDAO getMenuMgmtDAO() {
+	public MenuMgmtDAO getMenuMgmtDAO() {
 		return menuMgmtDAO;
 	}
 
@@ -36,11 +37,13 @@ public class MenuManagementService {
 
 		log.info("addMenu(Menu menu) : starts");
 
-		Menu menu = populateMenu(menuDto);
-
-		menu = getMenuMgmtDAO().addMenu(menu);
-
-		menuDto.setId(menu.getId());
+		try {
+			Menu menu = populateMenu(menuDto);
+			menu = getMenuMgmtDAO().addMenu(menu);
+			menuDto.setId(menu.getId());
+		} catch (Exception e) {
+			throw new MenuMgmtServiceException("add menu service exception",e, ErrorCodes.ADD_MENU_SERVICE_ERROR);
+		}
 
 		log.info("addMenu(Menu menu) : ends");
 		return menuDto;
@@ -77,12 +80,15 @@ public class MenuManagementService {
 	public Set<MenuDto> getAllMenus() {
 		log.info("getAllMenus() : starts");
 
-		Set<MenuDto> menusDto = new HashSet<MenuDto>();
+		Set<MenuDto> menusDto=null;
 		Set<Menu> menus = null;
-		menus = getMenuMgmtDAO().getAllMenus();
-
-		for (Menu menu : menus) {
-			menusDto.add(populateMenuDto(menu));
+		try {
+			menus = getMenuMgmtDAO().getAllMenus();
+			
+			menusDto = populateMenuDtoSet(menus);
+			
+		} catch (Exception e) {
+			throw new MenuMgmtServiceException("get all menus service exception",e, ErrorCodes.GET_ALL_MENUS_SERVICE_ERROR);
 		}
 
 		log.info("getAllMenus() : ends");
@@ -94,8 +100,12 @@ public class MenuManagementService {
 
 		Set<MenuDto> data = null;
 
-		Set<Menu> menuSet = getMenuMgmtDAO().getMenusList();
-		data = populateMenuDtoSet(menuSet);
+		try {
+			Set<Menu> menuSet = getMenuMgmtDAO().getMenusList();
+			data = populateMenuDtoSet(menuSet);
+		} catch (Exception e) {
+			throw new MenuMgmtServiceException("get menus list service exception",e, ErrorCodes.GET_MENU_LIST_SERVICE_ERROR);
+		}
 
 		log.info("getMenusList() : ends");
 		return data;
@@ -104,8 +114,12 @@ public class MenuManagementService {
 	public Set<MenuDto> editMenusList(Set<MenuDto> menuDtos) {
 		log.info("editMenusList(Set<MenuDto> menuDtos) : starts");
 
-		Set<Menu> menuSet = populateMenuSet(menuDtos);
-		menuSet = getMenuMgmtDAO().editMenuList(menuSet);
+		try {
+			Set<Menu> menuSet = populateMenuSet(menuDtos);
+			menuSet = getMenuMgmtDAO().editMenuList(menuSet);
+		} catch (Exception e) {
+			throw new MenuMgmtServiceException("edit menus list service exception",e, ErrorCodes.EDIT_MENU_LIST_SERVICE_ERROR);
+		}
 
 		log.info("editMenusList(Set<MenuDto> menuDtos) : ends");
 
@@ -116,9 +130,13 @@ public class MenuManagementService {
 
 		log.info("editMenu(Menu menu) : starts");
 
-		Menu menu = populateMenu(menuDto);
+		try {
+			Menu menu = populateMenu(menuDto);
 
-		menu = getMenuMgmtDAO().editMenu(menu);
+			menu = getMenuMgmtDAO().editMenu(menu);
+		} catch (Exception e) {
+			throw new MenuMgmtServiceException("edit menu service exception",e, ErrorCodes.EDIT_MENU_SERVICE_ERROR);
+		}
 
 		log.info("editMenu(Menu menu) : ends");
 		return menuDto;
@@ -128,7 +146,12 @@ public class MenuManagementService {
 
 		log.info("deleteMenu(String id) : starts");
 
-		boolean flag = getMenuMgmtDAO().deleteMenu(id);
+		boolean flag=false;
+		try {
+			flag = getMenuMgmtDAO().deleteMenu(id);
+		} catch (Exception e) {
+			throw new MenuMgmtServiceException("delete menu service exception",e, ErrorCodes.ADD_MENU_SERVICE_ERROR);
+		}
 
 		log.info("deleteMenu(String id) : ends");
 		return flag;
@@ -137,8 +160,13 @@ public class MenuManagementService {
 	public boolean deleteParent(Set<MenuDto> menuDtos) {
 
 		log.info("deleteParent(Set<MenuDto> menuDtos) : starts");
-		Set<Menu> menuSet = populateMenuSet(menuDtos);
-		boolean flag = getMenuMgmtDAO().deleteParent(menuSet);
+		boolean flag=false;
+		try {
+			Set<Menu> menuSet = populateMenuSet(menuDtos);
+			flag = getMenuMgmtDAO().deleteParent(menuSet);
+		} catch (Exception e) {
+			throw new MenuMgmtServiceException("delete parent menu service exception",e, ErrorCodes.DELETE_PARENT_MENU_SERVICE_ERROR);
+		}
 
 		log.info("deleteParent(Set<MenuDto> menuDtos) : ends");
 		return flag;

@@ -16,17 +16,17 @@ import javax.persistence.Id;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.Table;
-import javax.validation.constraints.Size;
+import javax.validation.constraints.NotNull;
 
 /**
  *
  * @author mtheetla
  */
 @Entity
-@Table(name = "integration_type")
+@Table(name = "permission_usergroup_mapping", catalog = "resourcemanagement", schema = "")
 @NamedQueries({
-    @NamedQuery(name = "IntegrationType.findAll", query = "SELECT i FROM IntegrationType i")})
-public class IntegrationType implements Serializable {
+    @NamedQuery(name = "PermissionUsergroupMapping.findAll", query = "SELECT p FROM PermissionUsergroupMapping p")})
+public class PermissionUsergroupMapping implements Serializable {
 
     private static final long serialVersionUID = 1L;
     @Id
@@ -34,15 +34,26 @@ public class IntegrationType implements Serializable {
     @Basic(optional = false)
     @Column(name = "id")
     private Integer id;
-    @Size(max = 50)
-    @Column(name = "type")
-    private String type;
+    @Basic(optional = false)
+    @NotNull
+    @Column(name = "permission_id")
+    private int permissionId;
+    @Basic(optional = false)
+    @NotNull
+    @Column(name = "role_id")
+    private int roleId;
 
-    public IntegrationType() {
+    public PermissionUsergroupMapping() {
     }
 
-    public IntegrationType(Integer id) {
+    public PermissionUsergroupMapping(Integer id) {
         this.id = id;
+    }
+
+    public PermissionUsergroupMapping(Integer id, int permissionId, int roleId) {
+        this.id = id;
+        this.permissionId = permissionId;
+        this.roleId = roleId;
     }
 
     public Integer getId() {
@@ -53,12 +64,20 @@ public class IntegrationType implements Serializable {
         this.id = id;
     }
 
-    public String getType() {
-        return type;
+    public int getPermissionId() {
+        return permissionId;
     }
 
-    public void setType(String type) {
-        this.type = type;
+    public void setPermissionId(int permissionId) {
+        this.permissionId = permissionId;
+    }
+
+    public int getRoleId() {
+        return roleId;
+    }
+
+    public void setRoleId(int roleId) {
+        this.roleId = roleId;
     }
 
     @Override
@@ -71,10 +90,10 @@ public class IntegrationType implements Serializable {
     @Override
     public boolean equals(Object object) {
         // TODO: Warning - this method won't work in the case the id fields are not set
-        if (!(object instanceof IntegrationType)) {
+        if (!(object instanceof PermissionUsergroupMapping)) {
             return false;
         }
-        IntegrationType other = (IntegrationType) object;
+        PermissionUsergroupMapping other = (PermissionUsergroupMapping) object;
         if ((this.id == null && other.id != null) || (this.id != null && !this.id.equals(other.id))) {
             return false;
         }
@@ -83,7 +102,7 @@ public class IntegrationType implements Serializable {
 
     @Override
     public String toString() {
-        return "com.orbcomm.synergy.resourceManagement.dao.IntegrationType[ id=" + id + " ]";
+        return "com.orbc.syn.menumgmt.entity.PermissionUsergroupMapping[ id=" + id + " ]";
     }
     
 }

@@ -23,10 +23,10 @@ import javax.validation.constraints.Size;
  * @author mtheetla
  */
 @Entity
-@Table(name = "integration_type")
+@Table(name = "usergroup", catalog = "resourcemanagement", schema = "")
 @NamedQueries({
-    @NamedQuery(name = "IntegrationType.findAll", query = "SELECT i FROM IntegrationType i")})
-public class IntegrationType implements Serializable {
+    @NamedQuery(name = "Usergroup.findAll", query = "SELECT u FROM Usergroup u")})
+public class Usergroup implements Serializable {
 
     private static final long serialVersionUID = 1L;
     @Id
@@ -34,14 +34,20 @@ public class IntegrationType implements Serializable {
     @Basic(optional = false)
     @Column(name = "id")
     private Integer id;
-    @Size(max = 50)
-    @Column(name = "type")
-    private String type;
+    @Size(max = 100)
+    @Column(name = "group_name")
+    private String groupName;
+    @Size(max = 100)
+    @Column(name = "group_desc")
+    private String groupDesc;
+    @Size(max = 100)
+    @Column(name = "display_name")
+    private String displayName;
 
-    public IntegrationType() {
+    public Usergroup() {
     }
 
-    public IntegrationType(Integer id) {
+    public Usergroup(Integer id) {
         this.id = id;
     }
 
@@ -53,12 +59,28 @@ public class IntegrationType implements Serializable {
         this.id = id;
     }
 
-    public String getType() {
-        return type;
+    public String getGroupName() {
+        return groupName;
     }
 
-    public void setType(String type) {
-        this.type = type;
+    public void setGroupName(String groupName) {
+        this.groupName = groupName;
+    }
+
+    public String getGroupDesc() {
+        return groupDesc;
+    }
+
+    public void setGroupDesc(String groupDesc) {
+        this.groupDesc = groupDesc;
+    }
+
+    public String getDisplayName() {
+        return displayName;
+    }
+
+    public void setDisplayName(String displayName) {
+        this.displayName = displayName;
     }
 
     @Override
@@ -71,10 +93,10 @@ public class IntegrationType implements Serializable {
     @Override
     public boolean equals(Object object) {
         // TODO: Warning - this method won't work in the case the id fields are not set
-        if (!(object instanceof IntegrationType)) {
+        if (!(object instanceof Usergroup)) {
             return false;
         }
-        IntegrationType other = (IntegrationType) object;
+        Usergroup other = (Usergroup) object;
         if ((this.id == null && other.id != null) || (this.id != null && !this.id.equals(other.id))) {
             return false;
         }
@@ -83,7 +105,7 @@ public class IntegrationType implements Serializable {
 
     @Override
     public String toString() {
-        return "com.orbcomm.synergy.resourceManagement.dao.IntegrationType[ id=" + id + " ]";
+        return "com.orbc.syn.menumgmt.entity.Usergroup[ id=" + id + " ]";
     }
     
 }

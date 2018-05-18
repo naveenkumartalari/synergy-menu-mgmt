@@ -23,10 +23,10 @@ import javax.validation.constraints.Size;
  * @author mtheetla
  */
 @Entity
-@Table(name = "integration_type")
+@Table(name = "role", catalog = "resourcemanagement", schema = "")
 @NamedQueries({
-    @NamedQuery(name = "IntegrationType.findAll", query = "SELECT i FROM IntegrationType i")})
-public class IntegrationType implements Serializable {
+    @NamedQuery(name = "Role.findAll", query = "SELECT r FROM Role r")})
+public class Role implements Serializable {
 
     private static final long serialVersionUID = 1L;
     @Id
@@ -35,13 +35,19 @@ public class IntegrationType implements Serializable {
     @Column(name = "id")
     private Integer id;
     @Size(max = 50)
-    @Column(name = "type")
-    private String type;
+    @Column(name = "name")
+    private String name;
+    @Size(max = 100)
+    @Column(name = "display_name")
+    private String displayName;
+    @Size(max = 50)
+    @Column(name = "description")
+    private String description;
 
-    public IntegrationType() {
+    public Role() {
     }
 
-    public IntegrationType(Integer id) {
+    public Role(Integer id) {
         this.id = id;
     }
 
@@ -53,12 +59,28 @@ public class IntegrationType implements Serializable {
         this.id = id;
     }
 
-    public String getType() {
-        return type;
+    public String getName() {
+        return name;
     }
 
-    public void setType(String type) {
-        this.type = type;
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public String getDisplayName() {
+        return displayName;
+    }
+
+    public void setDisplayName(String displayName) {
+        this.displayName = displayName;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
     }
 
     @Override
@@ -71,10 +93,10 @@ public class IntegrationType implements Serializable {
     @Override
     public boolean equals(Object object) {
         // TODO: Warning - this method won't work in the case the id fields are not set
-        if (!(object instanceof IntegrationType)) {
+        if (!(object instanceof Role)) {
             return false;
         }
-        IntegrationType other = (IntegrationType) object;
+        Role other = (Role) object;
         if ((this.id == null && other.id != null) || (this.id != null && !this.id.equals(other.id))) {
             return false;
         }
@@ -83,7 +105,7 @@ public class IntegrationType implements Serializable {
 
     @Override
     public String toString() {
-        return "com.orbcomm.synergy.resourceManagement.dao.IntegrationType[ id=" + id + " ]";
+        return "com.orbc.syn.menumgmt.entity.Role[ id=" + id + " ]";
     }
     
 }

@@ -4,9 +4,9 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication
-public class SynergyMenuMgmtApplication {
+public class SynergyMenuMgmtApp {
 
 	public static void main(String[] args) {
-		SpringApplication.run(SynergyMenuMgmtApplication.class, args);
+		SpringApplication.run(SynergyMenuMgmtApp.class, args);
 	}
 }

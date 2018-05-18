@@ -7,6 +7,7 @@ package com.orbc.syn.menumgmt.entity;
 
 import java.io.Serializable;
 import java.util.Set;
+
 import javax.persistence.Basic;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;

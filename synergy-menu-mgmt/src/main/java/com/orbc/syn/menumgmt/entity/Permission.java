@@ -23,10 +23,10 @@ import javax.validation.constraints.Size;
  * @author mtheetla
  */
 @Entity
-@Table(name = "integration_type")
+@Table(name = "permission", catalog = "resourcemanagement", schema = "")
 @NamedQueries({
-    @NamedQuery(name = "IntegrationType.findAll", query = "SELECT i FROM IntegrationType i")})
-public class IntegrationType implements Serializable {
+    @NamedQuery(name = "Permission.findAll", query = "SELECT p FROM Permission p")})
+public class Permission implements Serializable {
 
     private static final long serialVersionUID = 1L;
     @Id
@@ -35,13 +35,16 @@ public class IntegrationType implements Serializable {
     @Column(name = "id")
     private Integer id;
     @Size(max = 50)
-    @Column(name = "type")
-    private String type;
+    @Column(name = "name")
+    private String name;
+    @Size(max = 100)
+    @Column(name = "description")
+    private String description;
 
-    public IntegrationType() {
+    public Permission() {
     }
 
-    public IntegrationType(Integer id) {
+    public Permission(Integer id) {
         this.id = id;
     }
 
@@ -53,12 +56,20 @@ public class IntegrationType implements Serializable {
         this.id = id;
     }
 
-    public String getType() {
-        return type;
+    public String getName() {
+        return name;
     }
 
-    public void setType(String type) {
-        this.type = type;
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
     }
 
     @Override
@@ -71,10 +82,10 @@ public class IntegrationType implements Serializable {
     @Override
     public boolean equals(Object object) {
         // TODO: Warning - this method won't work in the case the id fields are not set
-        if (!(object instanceof IntegrationType)) {
+        if (!(object instanceof Permission)) {
             return false;
         }
-        IntegrationType other = (IntegrationType) object;
+        Permission other = (Permission) object;
         if ((this.id == null && other.id != null) || (this.id != null && !this.id.equals(other.id))) {
             return false;
         }
@@ -83,7 +94,7 @@ public class IntegrationType implements Serializable {
 
     @Override
     public String toString() {
-        return "com.orbcomm.synergy.resourceManagement.dao.IntegrationType[ id=" + id + " ]";
+        return "com.orbc.syn.menumgmt.entity.Permission[ id=" + id + " ]";
     }
     
 }

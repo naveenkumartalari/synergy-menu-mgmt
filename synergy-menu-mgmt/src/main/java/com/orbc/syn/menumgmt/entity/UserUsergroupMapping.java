@@ -16,17 +16,17 @@ import javax.persistence.Id;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.Table;
-import javax.validation.constraints.Size;
+import javax.validation.constraints.NotNull;
 
 /**
  *
  * @author mtheetla
  */
 @Entity
-@Table(name = "integration_type")
+@Table(name = "user_usergroup_mapping", catalog = "resourcemanagement", schema = "")
 @NamedQueries({
-    @NamedQuery(name = "IntegrationType.findAll", query = "SELECT i FROM IntegrationType i")})
-public class IntegrationType implements Serializable {
+    @NamedQuery(name = "UserUsergroupMapping.findAll", query = "SELECT u FROM UserUsergroupMapping u")})
+public class UserUsergroupMapping implements Serializable {
 
     private static final long serialVersionUID = 1L;
     @Id
@@ -34,15 +34,26 @@ public class IntegrationType implements Serializable {
     @Basic(optional = false)
     @Column(name = "id")
     private Integer id;
-    @Size(max = 50)
-    @Column(name = "type")
-    private String type;
+    @Basic(optional = false)
+    @NotNull
+    @Column(name = "Usergroup_id")
+    private int usergroupid;
+    @Basic(optional = false)
+    @NotNull
+    @Column(name = "User_guid")
+    private int userguid;
 
-    public IntegrationType() {
+    public UserUsergroupMapping() {
     }
 
-    public IntegrationType(Integer id) {
+    public UserUsergroupMapping(Integer id) {
         this.id = id;
+    }
+
+    public UserUsergroupMapping(Integer id, int usergroupid, int userguid) {
+        this.id = id;
+        this.usergroupid = usergroupid;
+        this.userguid = userguid;
     }
 
     public Integer getId() {
@@ -53,12 +64,20 @@ public class IntegrationType implements Serializable {
         this.id = id;
     }
 
-    public String getType() {
-        return type;
+    public int getUsergroupid() {
+        return usergroupid;
     }
 
-    public void setType(String type) {
-        this.type = type;
+    public void setUsergroupid(int usergroupid) {
+        this.usergroupid = usergroupid;
+    }
+
+    public int getUserguid() {
+        return userguid;
+    }
+
+    public void setUserguid(int userguid) {
+        this.userguid = userguid;
     }
 
     @Override
@@ -71,10 +90,10 @@ public class IntegrationType implements Serializable {
     @Override
     public boolean equals(Object object) {
         // TODO: Warning - this method won't work in the case the id fields are not set
-        if (!(object instanceof IntegrationType)) {
+        if (!(object instanceof UserUsergroupMapping)) {
             return false;
         }
-        IntegrationType other = (IntegrationType) object;
+        UserUsergroupMapping other = (UserUsergroupMapping) object;
         if ((this.id == null && other.id != null) || (this.id != null && !this.id.equals(other.id))) {
             return false;
         }
@@ -83,7 +102,7 @@ public class IntegrationType implements Serializable {
 
     @Override
     public String toString() {
-        return "com.orbcomm.synergy.resourceManagement.dao.IntegrationType[ id=" + id + " ]";
+        return "com.orbc.syn.menumgmt.entity.UserUsergroupMapping[ id=" + id + " ]";
     }
     
 }

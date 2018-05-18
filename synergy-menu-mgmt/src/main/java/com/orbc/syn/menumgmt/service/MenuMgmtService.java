@@ -29,6 +29,10 @@ public class MenuMgmtService {
 	@Autowired
 	private MenuMgmtDAO menuMgmtDAO;
 
+	public void setMenuMgmtDAO(MenuMgmtDAO menuMgmtDAO) {
+		this.menuMgmtDAO = menuMgmtDAO;
+	}
+
 	public MenuMgmtDAO getMenuMgmtDAO() {
 		return menuMgmtDAO;
 	}

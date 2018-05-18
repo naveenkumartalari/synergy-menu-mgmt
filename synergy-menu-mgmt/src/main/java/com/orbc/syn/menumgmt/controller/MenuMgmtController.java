@@ -40,20 +40,18 @@ public class MenuMgmtController {
 	public MenuMgmtService getMenuMgmtService() {
 		return menuMgmtService;
 	}
+	
+	public void setMenuMgmtService(MenuMgmtService menuMgmtService) {
+		this.menuMgmtService = menuMgmtService;
+	}
 
 	@RequestMapping(value = "/addMenu", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
 	public MenuDto addMenu(@RequestBody MenuDto menuDto) {
 
 		log.info("addMenu(Menu menu) : starts");
 
-		try {
 			menuDto = getMenuMgmtService().addMenu(menuDto);
-		} catch (MenuMgmtDAOException e) {
-			throw e;
-		} catch (MenuMgmtServiceException e) {
-			throw e;
-		}
-
+		
 		log.info("addMenu(Menu menu) : ends");
 		return menuDto;
 	}

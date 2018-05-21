@@ -21,8 +21,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.orbc.syn.menumgmt.constants.ControllerConstants;
 import com.orbc.syn.menumgmt.dto.MenuDto;
 import com.orbc.syn.menumgmt.dto.Response;
-import com.orbc.syn.menumgmt.exception.MenuMgmtDAOException;
-import com.orbc.syn.menumgmt.exception.MenuMgmtServiceException;
+import com.orbc.syn.menumgmt.exception.AuthenticationFailedException;
 import com.orbc.syn.menumgmt.service.MenuMgmtService;
 
 /**
@@ -89,13 +88,6 @@ public class MenuMgmtController {
 
 	}
 
-	@RequestMapping(value = "/addResourceToMenu/{menuId}/{resourceId}", method = RequestMethod.PUT, produces = MediaType.APPLICATION_JSON_VALUE)
-	public String addResourceToMenu(@PathVariable("menuId") String menuId,
-			@PathVariable("resourceId") String resourceId) {
-
-		return "resource ID: " + resourceId + "has been added to Menu ID: " + menuId;
-	}
-
 	@GetMapping(value = "/getAllMenus", produces = MediaType.APPLICATION_JSON_VALUE)
 	@ResponseBody
 	public Set<MenuDto> getAllMenus() {
@@ -152,5 +144,5 @@ public class MenuMgmtController {
 		log.info("deleteParent(LinkedHashSet<MenuDto> menuDtoSet) : ends");
 		return response;
 	}
-
+	
 }

@@ -5,6 +5,10 @@ public class ErrorDetails {
 	private String details;
 
 	private int errorCode;
+	
+	public ErrorDetails() {
+		super();
+	}
 
 	public ErrorDetails(String message, String details) {
 		super();
@@ -29,6 +33,18 @@ public class ErrorDetails {
 
 	public int getErrorCode() {
 		return errorCode;
+	}
+	
+	public void setMessage(String message) {
+		this.message = message;
+	}
+
+	public void setDetails(String details) {
+		this.details = details;
+	}
+
+	public void setErrorCode(int errorCode) {
+		this.errorCode = errorCode;
 	}
 
 }

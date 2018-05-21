@@ -31,7 +31,6 @@ public class MenuMgmtServiceTest extends SynMenuMgmtAppTests{
 		
 		MenuDto menu = getMenuMgmtService().addMenu(menuDto);
 		assertNotNull(menu, "unexpected null");
-		System.out.println("menu.getId()"+menu.getId());
 		assertFalse(menu.getId() == 0, "menu has not created");
 	}
 

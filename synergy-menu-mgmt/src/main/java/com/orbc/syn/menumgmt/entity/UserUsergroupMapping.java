@@ -13,8 +13,6 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.NamedQueries;
-import javax.persistence.NamedQuery;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 
@@ -23,9 +21,7 @@ import javax.validation.constraints.NotNull;
  * @author mtheetla
  */
 @Entity
-@Table(name = "user_usergroup_mapping", catalog = "resourcemanagement", schema = "")
-@NamedQueries({
-    @NamedQuery(name = "UserUsergroupMapping.findAll", query = "SELECT u FROM UserUsergroupMapping u")})
+@Table(name = "user_usergroup_mapping")
 public class UserUsergroupMapping implements Serializable {
 
     private static final long serialVersionUID = 1L;
@@ -40,8 +36,8 @@ public class UserUsergroupMapping implements Serializable {
     private int usergroupid;
     @Basic(optional = false)
     @NotNull
-    @Column(name = "User_guid")
-    private int userguid;
+    @Column(name = "User_id")
+    private int userId;
 
     public UserUsergroupMapping() {
     }
@@ -53,7 +49,7 @@ public class UserUsergroupMapping implements Serializable {
     public UserUsergroupMapping(Integer id, int usergroupid, int userguid) {
         this.id = id;
         this.usergroupid = usergroupid;
-        this.userguid = userguid;
+        this.userId = userId;
     }
 
     public Integer getId() {
@@ -72,12 +68,12 @@ public class UserUsergroupMapping implements Serializable {
         this.usergroupid = usergroupid;
     }
 
-    public int getUserguid() {
-        return userguid;
+    public int getUserId() {
+        return userId;
     }
 
-    public void setUserguid(int userguid) {
-        this.userguid = userguid;
+    public void setUseriId(int userId) {
+        this.userId = userId;
     }
 
     @Override
@@ -102,7 +98,7 @@ public class UserUsergroupMapping implements Serializable {
 
     @Override
     public String toString() {
-        return "com.orbc.syn.menumgmt.entity.UserUsergroupMapping[ id=" + id + " ]";
+        return "com.synergy.resourcemanagement.dao.UserUsergroupMapping[ id=" + id + " ]";
     }
     
 }

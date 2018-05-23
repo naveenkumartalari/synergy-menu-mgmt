@@ -225,5 +225,34 @@ public class MenuMgmtDAO {
 		log.info("deleteParent(Set<Menu> menus) : ends");
 		return true;
 	}
+	
+	public Set<Menu> getUserMenusList(String userName) {
+		log.info("getUserMenusList(String userName) : starts");
+
+		Set<Menu> data = null;
+		Session session = HibernateUtil.getSessionFactory().openSession();
+		Transaction transaction = null;
+		try {
+			transaction = session.beginTransaction();
+
+			Criteria appcrt = session.createCriteria(Menu.class);
+			// appcrt.add(Restrictions.isNull("parent"));
+			appcrt.add(Restrictions.eq("isDeleted", DBConstants.MENU_NOT_DELETED));
+			appcrt.addOrder(Order.asc("menuOrder"));
+			data = new LinkedHashSet<Menu>(appcrt.list());
+
+			transaction.commit();
+		} catch (HibernateException e) {
+			transaction.rollback();
+			e.printStackTrace();
+			throw new MenuMgmtDAOException("unable to retrieve user menus list", e, ErrorCodes.GET_USER_MENU_LIST_DB_ERROR);
+		} finally {
+			session.close();
+		}
+
+		log.info("getUserMenusList(String userName) : ends");
+		return data;
+
+	}
 
 }

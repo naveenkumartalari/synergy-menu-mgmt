@@ -1,9 +1,7 @@
 /**
  * 
  */
-package com.orbc.syn.menumgmt.dto;
-
-import java.util.List;
+package com.orbc.syn.menumgmt.vo;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 

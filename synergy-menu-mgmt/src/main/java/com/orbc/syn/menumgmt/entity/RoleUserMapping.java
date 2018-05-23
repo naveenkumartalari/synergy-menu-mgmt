@@ -21,8 +21,8 @@ import javax.validation.constraints.NotNull;
  * @author mtheetla
  */
 @Entity
-@Table(name = "permission_usergroup_mapping")
-public class PermissionUsergroupMapping implements Serializable {
+@Table(name = "role_user_mapping")
+public class RoleUserMapping implements Serializable {
 
     private static final long serialVersionUID = 1L;
     @Id
@@ -32,24 +32,24 @@ public class PermissionUsergroupMapping implements Serializable {
     private Integer id;
     @Basic(optional = false)
     @NotNull
-    @Column(name = "permission_id")
-    private int permissionId;
+    @Column(name = "role_id")
+    private int roleId;
     @Basic(optional = false)
     @NotNull
-    @Column(name = "usergroup_id")
-    private int userGroupId;
+    @Column(name = "user_id")
+    private int userid;
 
-    public PermissionUsergroupMapping() {
+    public RoleUserMapping() {
     }
 
-    public PermissionUsergroupMapping(Integer id) {
+    public RoleUserMapping(Integer id) {
         this.id = id;
     }
 
-    public PermissionUsergroupMapping(Integer id, int permissionId, int userGroupId) {
+    public RoleUserMapping(Integer id, int roleId, int userid) {
         this.id = id;
-        this.permissionId = permissionId;
-        this.userGroupId = userGroupId;
+        this.roleId = roleId;
+        this.userid = userid;
     }
 
     public Integer getId() {
@@ -60,25 +60,23 @@ public class PermissionUsergroupMapping implements Serializable {
         this.id = id;
     }
 
-    public int getPermissionId() {
-        return permissionId;
+    public int getRoleId() {
+        return roleId;
     }
 
-    public void setPermissionId(int permissionId) {
-        this.permissionId = permissionId;
+    public void setRoleId(int roleId) {
+        this.roleId = roleId;
     }
 
-    
+    public int getUserid() {
+        return userid;
+    }
 
-    public int getUserGroupId() {
-		return userGroupId;
-	}
+    public void setUserGuid(int userid) {
+        this.userid = userid;
+    }
 
-	public void setUserGroupId(int userGroupId) {
-		this.userGroupId = userGroupId;
-	}
-
-	@Override
+    @Override
     public int hashCode() {
         int hash = 0;
         hash += (id != null ? id.hashCode() : 0);
@@ -88,10 +86,10 @@ public class PermissionUsergroupMapping implements Serializable {
     @Override
     public boolean equals(Object object) {
         // TODO: Warning - this method won't work in the case the id fields are not set
-        if (!(object instanceof PermissionUsergroupMapping)) {
+        if (!(object instanceof RoleUserMapping)) {
             return false;
         }
-        PermissionUsergroupMapping other = (PermissionUsergroupMapping) object;
+        RoleUserMapping other = (RoleUserMapping) object;
         if ((this.id == null && other.id != null) || (this.id != null && !this.id.equals(other.id))) {
             return false;
         }
@@ -100,7 +98,7 @@ public class PermissionUsergroupMapping implements Serializable {
 
     @Override
     public String toString() {
-        return "com.synergy.resourcemanagement.dao.PermissionUsergroupMapping[ id=" + id + " ]";
+        return "com.synergy.resourcemanagement.dao.RoleUserMapping[ id=" + id + " ]";
     }
     
 }

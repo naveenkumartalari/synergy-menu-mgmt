@@ -33,6 +33,7 @@ public final class AppConstants {
     public static final String ACAP_KEY = "Accept";      
     public static final String ACCT_KEY = "content_type";       
     public static final String ACCC_KEY = "Cache-Control"; 
+    public static final String AUTHORIZATION="Authorization";
     
     public static final String CLGR_KEY = "grant_type";
     public static final String CLUSR_KEY = "username";
@@ -161,6 +162,7 @@ public final class AppConstants {
     public static final String AP_RID = "role_id";
     
     public static final String SSO_TOKEN_URL = "https://beta-ssoauth.tms-orbcomm.com/ssoauth/token"; 
+    public static final String SSO_TOKEN_VALIDATION_URL="https://192.168.178.88/ssores/api/identity";
     public static final String SEC_TLS = "TLS";
     public static final String SEC_BASIC = "BASIC";
     

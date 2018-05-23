@@ -1,6 +1,11 @@
 package com.orbc.syn.menumgmt.filters;
 
+import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.OutputStreamWriter;
+import java.net.HttpURLConnection;
+import java.net.URL;
 import java.security.KeyManagementException;
 import java.security.NoSuchAlgorithmException;
 import java.security.cert.CertificateException;
@@ -42,17 +47,18 @@ import org.springframework.stereotype.Component;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.orbc.syn.menumgmt.constants.AppConstants;
-import com.orbc.syn.menumgmt.dto.User;
 import com.orbc.syn.menumgmt.exception.ErrorDetails;
+import com.orbc.syn.menumgmt.tokens.cache.CacheManager;
+import com.orbc.syn.menumgmt.utils.DateUtil;
 import com.orbc.syn.menumgmt.utils.Utils;
+import com.orbc.syn.menumgmt.vo.TokenInfo;
+import com.orbc.syn.menumgmt.vo.User;
 
 @Component
 @Order(Ordered.HIGHEST_PRECEDENCE)
 public class SSOFilter implements Filter {
-	
-	private static final Logger log = LogManager.getLogger(SSOFilter.class);
 
-	private static final boolean CONDITION = true;
+	private static final Logger log = LogManager.getLogger(SSOFilter.class);
 
 	@Override
 	public void init(FilterConfig filterConfig) throws ServletException {
@@ -62,37 +68,52 @@ public class SSOFilter implements Filter {
 	@Override
 	public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain)
 			throws IOException, ServletException {
-		
-		String token=((HttpServletRequest) request).getHeader("AUTH-TOKEN");
-		User user=new User();
-		if (CONDITION == validateSSOToken(user) || true) //TO-DO need to change this logic
+
+		//String token = ((HttpServletRequest) request).getHeader(AppConstants.AUTHORIZATION);
+
+		boolean flag = true;
+
+		/*TokenInfo tokenInfo = CacheManager.getFromCache(token);
+		if (tokenInfo == null) {
+
+			tokenInfo = validateSSOToken(token);
+			if (tokenInfo != null) {
+				CacheManager.addToCache(token, tokenInfo);
+			} else {
+				flag = false;
+			}
+		} else {
+			if (DateUtil.isTokenExpired(tokenInfo.getExpiry()))
+				flag = false;
+		}*/
+
+		if (flag) {
 			chain.doFilter(request, response);
-		else {
-			
-			//throw new AuthenticationFailedException("Unauthorized access");
+		} else {
+
 			ErrorDetails errorResponse = new ErrorDetails();
-            errorResponse.setErrorCode(HttpServletResponse.SC_UNAUTHORIZED);
-            errorResponse.setMessage("Unauthorized Access");
-   
-            byte[] responseToSend = restResponseBytes(errorResponse);
-            ((HttpServletResponse) response).setHeader(AppConstants.ACCT_KEY, MediaType.APPLICATION_JSON);
-            ((HttpServletResponse) response).setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-            response.getOutputStream().write(responseToSend);
-            return;
+			errorResponse.setErrorCode(HttpServletResponse.SC_UNAUTHORIZED);
+			errorResponse.setMessage("Unauthorized Access");
+
+			byte[] responseToSend = restResponseBytes(errorResponse);
+			((HttpServletResponse) response).setHeader(AppConstants.ACCT_KEY, MediaType.APPLICATION_JSON);
+			((HttpServletResponse) response).setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+			response.getOutputStream().write(responseToSend);
+			return;
 		}
 
 	}
-	
+
 	private byte[] restResponseBytes(ErrorDetails eErrorResponse) throws IOException {
-        String serialized = new ObjectMapper().writeValueAsString(eErrorResponse);
-        return serialized.getBytes();
-    }
+		String serialized = new ObjectMapper().writeValueAsString(eErrorResponse);
+		return serialized.getBytes();
+	}
 
 	@Override
 	public void destroy() {
 
 	}
-	
+
 	public boolean validateSSOToken(User user) {
 
 		log.info("validateSSOToken(User user): starts");
@@ -102,7 +123,7 @@ public class SSOFilter implements Filter {
 		CloseableHttpResponse response = null;
 		try {
 			client = createHTTPSClient();
-			post = new HttpPost(AppConstants.SSO_TOKEN_URL);
+			post = new HttpPost(AppConstants.SSO_TOKEN_VALIDATION_URL);
 			post.addHeader(AppConstants.ACCC_KEY, AppConstants.ACCC_VAL);
 			post.addHeader(AppConstants.ACAP_KEY, MediaType.APPLICATION_JSON);
 			post.addHeader(AppConstants.ACCT_KEY, MediaType.APPLICATION_FORM_URLENCODED);
@@ -123,7 +144,7 @@ public class SSOFilter implements Filter {
 			} finally {
 				Utils.clear(params);
 			}
-			
+
 			if (response.getStatusLine().getStatusCode() != 200)
 				return false;
 
@@ -149,11 +170,11 @@ public class SSOFilter implements Filter {
 
 	private CloseableHttpClient createHTTPSClient() throws NoSuchAlgorithmException, KeyManagementException {
 		HttpClientBuilder builder = HttpClientBuilder.create();
-		SSLConnectionSocketFactory sslConnectionFactory = new SSLConnectionSocketFactory(getInsecureSSLContext(AppConstants.SEC_TLS),
-				NoopHostnameVerifier.INSTANCE);
+		SSLConnectionSocketFactory sslConnectionFactory = new SSLConnectionSocketFactory(
+				getInsecureSSLContext(AppConstants.SEC_TLS), NoopHostnameVerifier.INSTANCE);
 		builder.setSSLSocketFactory(sslConnectionFactory);
-		HttpClientConnectionManager ccm = new BasicHttpClientConnectionManager(
-				RegistryBuilder.<ConnectionSocketFactory>create().register(AppConstants.HTTPS, sslConnectionFactory).build());
+		HttpClientConnectionManager ccm = new BasicHttpClientConnectionManager(RegistryBuilder
+				.<ConnectionSocketFactory>create().register(AppConstants.HTTPS, sslConnectionFactory).build());
 		builder.setConnectionManager(ccm);
 		return builder.build();
 	}
@@ -179,6 +200,80 @@ public class SSOFilter implements Filter {
 		final SSLContext sslcontext = SSLContext.getInstance(algorithm);
 		sslcontext.init(null, trustAllCerts, new java.security.SecureRandom());
 		return sslcontext;
+	}
+
+	public TokenInfo validateSSOToken(String token) {
+
+		URL url;
+		StringBuilder sCurrentLineBuf = null;
+		OutputStreamWriter out = null;
+		BufferedReader br = null;
+		String response;
+		TokenInfo tokenInfo = null;
+
+		try {
+
+			url = new URL(AppConstants.SSO_TOKEN_VALIDATION_URL);
+
+			HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+
+			conn.setRequestProperty(AppConstants.ACCC_KEY, AppConstants.ACCC_VAL);
+			conn.setRequestProperty(AppConstants.ACAP_KEY, MediaType.APPLICATION_JSON);
+			conn.setRequestProperty(AppConstants.ACCT_KEY, MediaType.APPLICATION_FORM_URLENCODED);
+			conn.setRequestProperty(AppConstants.AUTHORIZATION, token);
+
+			conn.setDoOutput(true);
+
+			out = new OutputStreamWriter(conn.getOutputStream());
+
+			Utils.closeResource(out);
+
+			log.info("invoking SSO for token validation");
+
+			if (conn.getResponseCode() != 200) {
+
+				log.error("Failed : HTTP error code : " + conn.getResponseCode());
+				return tokenInfo;
+			}
+
+			br = new BufferedReader(new InputStreamReader(
+
+					(conn.getInputStream())));
+
+			sCurrentLineBuf = new StringBuilder();
+
+			String dtmresponse = AppConstants.EMPTY_STRING;
+
+			while (!Utils.isEmpty((dtmresponse = br.readLine()))) {
+				sCurrentLineBuf.append(dtmresponse);
+			}
+
+			conn.disconnect();
+			response = sCurrentLineBuf.toString();
+
+			if (Utils.isEmpty(response)) {
+				log.error("Got empty response from SSO");
+				return tokenInfo;
+			}
+
+			/**
+			 * converting JSON (SSO's) response to Java object (TokenInfo)
+			 */
+			ObjectMapper mapper = new ObjectMapper();
+			tokenInfo = mapper.readValue(response, TokenInfo.class);
+
+		} catch (Exception e) {
+
+			log.error(e.getMessage());
+			return tokenInfo;
+
+		} finally {
+
+			Utils.closeResource(out);
+			Utils.closeResource(br);
+		}
+
+		return tokenInfo;
 	}
 
 }

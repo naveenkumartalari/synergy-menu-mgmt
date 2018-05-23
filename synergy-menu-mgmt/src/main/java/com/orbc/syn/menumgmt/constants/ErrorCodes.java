@@ -12,6 +12,7 @@ public class ErrorCodes {
 	public static final int GET_MENU_LIST_DB_ERROR=1054;
 	public static final int EDIT_MENU_LIST_DB_ERROR=1055;
 	public static final int DELETE_PARENT_MENU_DB_ERROR=1056;
+	public static final int GET_USER_MENU_LIST_DB_ERROR=1057;
 	
 	
 	/**
@@ -24,6 +25,7 @@ public class ErrorCodes {
 	public static final int GET_MENU_LIST_SERVICE_ERROR=2054;
 	public static final int EDIT_MENU_LIST_SERVICE_ERROR=2055;
 	public static final int DELETE_PARENT_MENU_SERVICE_ERROR=2056;
+	public static final int GET_USER_MENU_LIST_SERVICE_ERROR=2057;
 	
 	/**
 	 * Validation Error Codes

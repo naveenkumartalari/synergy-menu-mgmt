@@ -24,7 +24,8 @@ import javax.persistence.Table;
 import javax.validation.constraints.Size;
 
 /**
- *
+ * Resource DAO class
+ * 
  * @author mtheetla
  */
 @Entity

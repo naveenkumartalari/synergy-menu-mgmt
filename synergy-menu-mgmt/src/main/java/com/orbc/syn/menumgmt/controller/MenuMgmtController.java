@@ -21,7 +21,6 @@ import org.springframework.web.bind.annotation.RestController;
 import com.orbc.syn.menumgmt.constants.ControllerConstants;
 import com.orbc.syn.menumgmt.dto.MenuDto;
 import com.orbc.syn.menumgmt.dto.Response;
-import com.orbc.syn.menumgmt.exception.AuthenticationFailedException;
 import com.orbc.syn.menumgmt.service.MenuMgmtService;
 
 /**
@@ -145,4 +144,16 @@ public class MenuMgmtController {
 		return response;
 	}
 	
+	@GetMapping(value = "/getUserMenus/{userName}", produces = MediaType.APPLICATION_JSON_VALUE)
+	@ResponseBody
+	public Set<MenuDto> getUserMenusList(@PathVariable("userName") String userName) {
+
+		log.info("getUserMenusList(String userName) : starts");
+
+		Set<MenuDto> menuDtos = getMenuMgmtService().getUserMenusList(userName);
+
+		log.info("getUserMenusList(String userName) : ends");
+		return menuDtos;
+
+	}
 }

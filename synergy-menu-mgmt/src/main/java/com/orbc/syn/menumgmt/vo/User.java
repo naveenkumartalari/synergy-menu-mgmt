@@ -1,7 +1,7 @@
 /**
  * 
  */
-package com.orbc.syn.menumgmt.dto;
+package com.orbc.syn.menumgmt.vo;
 
 import com.orbc.syn.menumgmt.constants.AppConstants;
 

@@ -195,5 +195,23 @@ public class MenuMgmtService {
 
 		return menuDtoSet;
 	}
+	
+	public Set<MenuDto> getUserMenusList(String userName) {
+		log.info("getUserMenusList(String userName) : starts");
+
+		Set<MenuDto> data = null;
+
+		try {
+			Set<Menu> menuSet = getMenuMgmtDAO().getMenusList();
+			Set<Menu> userMenuSet = getMenuMgmtDAO().getUserMenusList(userName);
+			
+			data = populateMenuDtoSet(menuSet);
+		} catch (Exception e) {
+			throw new MenuMgmtServiceException("get user menus list service exception",e, ErrorCodes.GET_USER_MENU_LIST_SERVICE_ERROR);
+		}
+
+		log.info("getUserMenusList(String userName)");
+		return data;
+	}
 
 }

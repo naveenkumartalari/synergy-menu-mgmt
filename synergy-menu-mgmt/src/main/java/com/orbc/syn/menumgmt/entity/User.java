@@ -7,29 +7,27 @@ package com.orbc.syn.menumgmt.entity;
 
 import java.io.Serializable;
 import java.util.Date;
+import java.util.HashSet;
+import java.util.Set;
 
 import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.NamedQueries;
-import javax.persistence.NamedQuery;
+import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
+import javax.persistence.ManyToMany;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
-import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
-/**
- *
- * @author mtheetla
- */
+
 @Entity
-@Table(name = "user", catalog = "resourcemanagement", schema = "")
-@NamedQueries({
-    @NamedQuery(name = "User.findAll", query = "SELECT u FROM User u")})
+@Table(name = "user")
 public class User implements Serializable {
 
     private static final long serialVersionUID = 1L;
@@ -41,43 +39,40 @@ public class User implements Serializable {
     @Size(max = 5)
     @Column(name = "title")
     private String title;
-    @Size(max = 30)
+   
     @Column(name = "guid")
     private String guid;
-    @Size(max = 30)
+   
     @Column(name = "username")
     private String username;
-    @Size(max = 10)
+    
     @Column(name = "first_name")
     private String firstName;
-    @Size(max = 10)
+    
     @Column(name = "last_name")
     private String lastName;
     // @Pattern(regexp="[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?", message="Invalid email")//if the field contains email address consider using this annotation to enforce field validation
-    @Size(max = 10)
     @Column(name = "email")
     private String email;
     @Column(name = "mobile_number")
-    private Integer mobileNumber;
-    @Size(max = 100)
+    private String mobileNumber;
+    
     @Column(name = "primary_email")
     private String primaryEmail;
-    @Size(max = 100)
+    
     @Column(name = "secondary_email")
     private String secondaryEmail;
     @Column(name = "primary_phone")
     private Integer primaryPhone;
     @Column(name = "secondary_phone")
-    private Integer secondaryPhone;
+    private String secondaryPhone;
     @Basic(optional = false)
-    @NotNull
     @Column(name = "created_date")
     @Temporal(TemporalType.TIMESTAMP)
     private Date createdDate;
     @Column(name = "created_by")
     private Integer createdBy;
     @Basic(optional = false)
-    @NotNull
     @Column(name = "last_updated_date")
     @Temporal(TemporalType.TIMESTAMP)
     private Date lastUpdatedDate;
@@ -86,34 +81,39 @@ public class User implements Serializable {
     @Column(name = "deleted_by")
     private Integer deletedBy;
     @Basic(optional = false)
-    @NotNull
     @Column(name = "deleted_date")
     @Temporal(TemporalType.TIMESTAMP)
     private Date deletedDate;
     @Basic(optional = false)
-    @NotNull
     @Column(name = "password_expired_date")
     @Temporal(TemporalType.TIMESTAMP)
     private Date passwordExpiredDate;
     @Basic(optional = false)
-    @NotNull
     @Column(name = "last_login_date")
     @Temporal(TemporalType.TIMESTAMP)
     private Date lastLoginDate;
     @Basic(optional = false)
-    @NotNull
     @Column(name = "locked_date")
     @Temporal(TemporalType.TIMESTAMP)
     private Date lockedDate;
     @Column(name = "active")
     private Integer active;
+    @Column(name = "user_activated")
+    private Integer userActivated;
+    @Column(name = "lock_status")
+    private Integer lockStatus;
     @Column(name = "disabled_flag")
     private Integer disabledFlag;
     @Column(name = "soft_delete_flag")
     private Integer softDeleteFlag;
     @Column(name = "failed_login_attempts")
     private Integer failedLoginAttempts;
-
+    @ManyToMany( fetch = FetchType.LAZY)
+	@JoinTable(name = "role_user_mapping", joinColumns = { @JoinColumn(name = "user_id") }, inverseJoinColumns = { @JoinColumn(name = "role_id") })
+    private Set<Role> roles;
+    @ManyToMany( fetch = FetchType.LAZY)
+	@JoinTable(name = "user_usergroup_mapping", joinColumns = { @JoinColumn(name = "user_id") }, inverseJoinColumns = { @JoinColumn(name = "Usergroup_id") })
+    private Set<UserGroup> userGroups;
     public User() {
     }
 
@@ -187,15 +187,15 @@ public class User implements Serializable {
         this.email = email;
     }
 
-    public Integer getMobileNumber() {
-        return mobileNumber;
-    }
+    public String getMobileNumber() {
+		return mobileNumber;
+	}
 
-    public void setMobileNumber(Integer mobileNumber) {
-        this.mobileNumber = mobileNumber;
-    }
+	public void setMobileNumber(String mobileNumber) {
+		this.mobileNumber = mobileNumber;
+	}
 
-    public String getPrimaryEmail() {
+	public String getPrimaryEmail() {
         return primaryEmail;
     }
 
@@ -219,11 +219,11 @@ public class User implements Serializable {
         this.primaryPhone = primaryPhone;
     }
 
-    public Integer getSecondaryPhone() {
+    public String getSecondaryPhone() {
         return secondaryPhone;
     }
 
-    public void setSecondaryPhone(Integer secondaryPhone) {
+    public void setSecondaryPhone(String secondaryPhone) {
         this.secondaryPhone = secondaryPhone;
     }
 
@@ -307,7 +307,23 @@ public class User implements Serializable {
         this.active = active;
     }
 
-    public Integer getDisabledFlag() {
+    public Integer getUserActivated() {
+		return userActivated;
+	}
+
+	public void setUserActivated(Integer userActivated) {
+		this.userActivated = userActivated;
+	}
+
+	public Integer getLockStatus() {
+		return lockStatus;
+	}
+
+	public void setLockStatus(Integer lockStatus) {
+		this.lockStatus = lockStatus;
+	}
+
+	public Integer getDisabledFlag() {
         return disabledFlag;
     }
 
@@ -331,7 +347,30 @@ public class User implements Serializable {
         this.failedLoginAttempts = failedLoginAttempts;
     }
 
-    @Override
+
+	public Set<Role> getRoles() {
+		if(roles == null){
+			roles = new HashSet<Role>();
+		}
+		return roles;
+	}
+
+	public void setRoles(Set<Role> roles) {
+		this.roles = roles;
+	}
+
+	public Set<UserGroup> getUserGroups() {
+		if(userGroups == null){
+			userGroups = new HashSet<UserGroup>();
+		}
+		return userGroups;
+	}
+
+	public void setUserGroups(Set<UserGroup> userGroups) {
+		this.userGroups = userGroups;
+	}
+
+	@Override
     public int hashCode() {
         int hash = 0;
         hash += (id != null ? id.hashCode() : 0);
@@ -353,7 +392,7 @@ public class User implements Serializable {
 
     @Override
     public String toString() {
-        return "com.orbc.syn.menumgmt.entity.User[ id=" + id + " ]";
+        return "com.synergy.resourcemanagement.dao.User[ id=" + id + " ]";
     }
     
 }

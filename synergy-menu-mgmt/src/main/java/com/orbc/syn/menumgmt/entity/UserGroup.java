@@ -6,10 +6,10 @@
 package com.orbc.syn.menumgmt.entity;
 
 import java.io.Serializable;
+import java.util.HashSet;
 import java.util.Set;
 
 import javax.persistence.Basic;
-import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -20,14 +20,12 @@ import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.Table;
+import javax.validation.constraints.Size;
 
-/**
- *
- * @author mtheetla
- */
+
 @Entity
-@Table(name = "role")
-public class Role implements Serializable {
+@Table(name = "usergroup")
+public class UserGroup implements Serializable {
 
     private static final long serialVersionUID = 1L;
     @Id
@@ -35,41 +33,28 @@ public class Role implements Serializable {
     @Basic(optional = false)
     @Column(name = "id")
     private Integer id;
-    
-    @Column(name = "name")
-    private String name;
-    
+    @Size(max = 100)
+    @Column(name = "group_name")
+    private String groupName;
+    @Size(max = 100)
+    @Column(name = "group_desc")
+    private String groupDesc;
+    @Size(max = 100)
     @Column(name = "display_name")
     private String displayName;
-   
-    @Column(name = "description")
-    private String description;
-    @Column(name = "default_flag")
-    private Integer defaultFlag;
-    @ManyToMany( fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-	@JoinTable(name = "role_permission_mapping", joinColumns = { @JoinColumn(name = "role_id") }, inverseJoinColumns = { @JoinColumn(name = "permission_id") })
+    
+    @ManyToMany( fetch = FetchType.LAZY)
+   	@JoinTable(name = "permission_usergroup_mapping", joinColumns = { @JoinColumn(name = "user_group_id") }, inverseJoinColumns = { @JoinColumn(name = "permission_id") })
     private Set<Permission> permissions;
+    
+    @ManyToMany( fetch = FetchType.LAZY)
+   	@JoinTable(name = "user_usergroup_mapping", joinColumns = { @JoinColumn(name = "usergroup_id") }, inverseJoinColumns = { @JoinColumn(name = "user_id") })
+    private Set<User> users;
 
-    public Set<Permission> getPermissions() {
-		return permissions;
-	}
-
-	public void setPermissions(Set<Permission> permissions) {
-		this.permissions = permissions;
-	}
-
-	public Integer getDefaultFlag() {
-		return defaultFlag;
-	}
-
-	public void setDefaultFlag(Integer defaultFlag) {
-		this.defaultFlag = defaultFlag;
-	}
-
-	public Role() {
+    public UserGroup() {
     }
 
-    public Role(Integer id) {
+    public UserGroup(Integer id) {
         this.id = id;
     }
 
@@ -81,12 +66,20 @@ public class Role implements Serializable {
         this.id = id;
     }
 
-    public String getName() {
-        return name;
+    public String getGroupName() {
+        return groupName;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public void setGroupName(String groupName) {
+        this.groupName = groupName;
+    }
+
+    public String getGroupDesc() {
+        return groupDesc;
+    }
+
+    public void setGroupDesc(String groupDesc) {
+        this.groupDesc = groupDesc;
     }
 
     public String getDisplayName() {
@@ -97,15 +90,26 @@ public class Role implements Serializable {
         this.displayName = displayName;
     }
 
-    public String getDescription() {
-        return description;
-    }
+    public Set<Permission> getPermissions() {
+		return permissions;
+	}
 
-    public void setDescription(String description) {
-        this.description = description;
-    }
+	public void setPermissions(Set<Permission> permissions) {
+		this.permissions = permissions;
+	}
 
-    @Override
+	public Set<User> getUsers() {
+		if(users == null){
+			users = new HashSet<User>();
+		}
+		return users;
+	}
+
+	public void setUsers(Set<User> users) {
+		this.users = users;
+	}
+
+	@Override
     public int hashCode() {
         int hash = 0;
         hash += (id != null ? id.hashCode() : 0);
@@ -115,10 +119,10 @@ public class Role implements Serializable {
     @Override
     public boolean equals(Object object) {
         // TODO: Warning - this method won't work in the case the id fields are not set
-        if (!(object instanceof Role)) {
+        if (!(object instanceof UserGroup)) {
             return false;
         }
-        Role other = (Role) object;
+        UserGroup other = (UserGroup) object;
         if ((this.id == null && other.id != null) || (this.id != null && !this.id.equals(other.id))) {
             return false;
         }
@@ -127,7 +131,7 @@ public class Role implements Serializable {
 
     @Override
     public String toString() {
-        return "com.synergy.resourcemanagement.dao.Role[ id=" + id + " ]";
+        return "com.synergy.resourcemanagement.dao.Usergroup[ id=" + id + " ]";
     }
     
 }
